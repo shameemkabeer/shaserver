@@ -1,0 +1,9 @@
+{
+  "title": "Uptime Kuma",
+  "description": "Self-hosted monitoring for websites, services and ports.",
+  "icon": "pulse",
+  "color": "#5cdd8b",
+  "dirs": ["data"],
+  "ports": [{"port": 3001, "label": "Web UI"}],
+  "notes": "Create the admin account on first visit."
+}

@@ -1,0 +1,19 @@
+# File Browser - installed by PiBoard. Bound to localhost + Tailscale IP only.
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ./files:/srv
+      - /media:/srv/usb:rslave        # USB drives plugged into the Pi (/media/<user>/<drive>)
+      - ./database:/database
+      - ./config:/config
+    ports:
+      - "${LOCAL_IP}:8082:80"
+      - "${TAILSCALE_IP}:8082:80"
+    security_opt:
+      - no-new-privileges:true

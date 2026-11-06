@@ -1,0 +1,20 @@
+# Kiosk settings. kiosk/kiosk.conf is created from this by install-kiosk.sh.
+# Changes apply when Chromium restarts:  pkill -f piboard-kiosk-browser
+# (mode/transform changes need: sudo systemctl restart piboard-kiosk)
+
+# Display mode. Empty = the panel's preferred mode (800x480 on the Waveshare
+# 3.5in HDMI LCD). "custom:480x320@60" forces the panel's native resolution.
+KIOSK_MODE=""
+# Output rotation: normal, 90, 180, 270, flipped, ... (wlr-randr --transform)
+KIOSK_TRANSFORM=""
+
+# Browser zoom (CSS px per screen px). 1 at native resolution.
+KIOSK_SCALE=1
+
+# Override the start page (used for display tests / touch calibration).
+KIOSK_URL=""
+
+# Extra cage arguments (default "-d -s": no decorations, allow VT switch).
+#CAGE_ARGS="-d -s"
+# Extra Chromium flags.
+#CHROMIUM_EXTRA_ARGS=""

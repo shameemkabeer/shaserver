@@ -1,0 +1,21 @@
+# AdGuard Home - installed by PiBoard. Ports are bound ONLY to localhost and
+# the Tailscale IP (Docker-published ports bypass ufw, so never use 0.0.0.0).
+services:
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ./work:/opt/adguardhome/work
+      - ./conf:/opt/adguardhome/conf
+    ports:
+      - "${LOCAL_IP}:53:53/tcp"
+      - "${LOCAL_IP}:53:53/udp"
+      - "${TAILSCALE_IP}:53:53/tcp"
+      - "${TAILSCALE_IP}:53:53/udp"
+      - "${LOCAL_IP}:3000:3000/tcp"
+      - "${TAILSCALE_IP}:3000:3000/tcp"
+    security_opt:
+      - no-new-privileges:true

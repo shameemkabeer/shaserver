@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#0b0e14">
+<meta name="color-scheme" content="dark">
+<title>Terminal · PiBoard</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="vendor/xterm.css">
+<link rel="stylesheet" href="terminal.css">
+<script src="vendor/xterm.js" defer></script>
+<script src="vendor/addon-fit.js" defer></script>
+<script src="terminal.js" defer></script>
+</head>
+<body class="term-page">
+  <header class="topbar term-bar">
+    <a class="btn sm" href="/" id="term-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg>PiBoard</a>
+    <div class="term-title"><span class="dot" id="term-dot"></span><span id="term-host">Terminal</span></div>
+    <button class="btn sm danger hidden" id="term-end">Disconnect</button>
+  </header>
+
+  <main class="term-main">
+    <!-- step 1: confirm the admin password (asked again for every terminal) -->
+    <form class="card term-auth" id="term-auth">
+      <h3>Open a terminal</h3>
+      <p class="muted small">This opens a shell on the Pi as your user, so you can run commands and edit files (for example <code>nano ~/piboard/kiosk/kiosk.conf</code>). Enter the admin password to continue.</p>
+      <input type="password" id="term-pw" placeholder="Admin password" autocomplete="current-password" required>
+      <button class="btn primary" type="submit" id="term-go">Open terminal</button>
+      <p class="msg" id="term-msg" role="alert"></p>
+    </form>
+
+    <!-- step 2: the terminal -->
+    <div class="term-wrap hidden" id="term-wrap">
+      <div id="term"></div>
+    </div>
+  </main>
+
+  <!-- keys a phone keyboard doesn't have -->
+  <nav class="term-keys hidden" id="term-keys" aria-label="Extra keys">
+    <button data-k="esc">Esc</button>
+    <button data-k="tab">Tab</button>
+    <button data-k="ctrl" id="k-ctrl">Ctrl</button>
+    <button data-k="left" aria-label="Left">←</button>
+    <button data-k="up" aria-label="Up">↑</button>
+    <button data-k="down" aria-label="Down">↓</button>
+    <button data-k="right" aria-label="Right">→</button>
+    <button data-k="|">|</button>
+    <button data-k="/">/</button>
+    <button data-k="~">~</button>
+  </nav>
+</body>
+</html>

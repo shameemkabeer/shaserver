@@ -1,0 +1,36 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Display test</title>
+<style>
+  html,body{margin:0;height:100%;background:#000;color:#fff;font:14px/1.2 system-ui,sans-serif;overflow:hidden}
+  #grid{position:fixed;inset:0;background:
+    repeating-linear-gradient(90deg,#fff 0 1px,transparent 1px 2px) left top/50% 40px no-repeat,
+    repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 2px) right top/50% 40px no-repeat}
+  .border{position:fixed;inset:0;border:1px solid #f33}
+  .circle{position:fixed;left:50%;top:55%;width:40vmin;height:40vmin;margin:-20vmin;border:2px solid #4af;border-radius:50%}
+  .sq{position:fixed;left:50%;top:55%;width:40vmin;height:40vmin;margin:-20vmin;border:1px dashed #4af8}
+  #info{position:fixed;left:8px;top:48px;font-weight:700;font-size:20px}
+  .t{position:fixed;left:8px;bottom:8px}
+  .t div{margin-top:2px}
+  #big{position:fixed;right:10px;top:46px;font-size:56px;font-weight:800}
+  .dot{position:fixed;width:14px;height:14px;margin:-7px;border-radius:50%;background:#ff0;pointer-events:none}
+</style></head><body>
+<div id="grid"></div><div class="border"></div><div class="sq"></div><div class="circle"></div>
+<div id="info"></div><div id="big">A</div>
+<div class="t">
+  <div style="font-size:9px">9px  The quick brown fox jumps over the lazy dog 0123456789</div>
+  <div style="font-size:11px">11px The quick brown fox jumps over the lazy dog 0123456789</div>
+  <div style="font-size:13px">13px The quick brown fox jumps over the lazy dog</div>
+  <div style="font-size:16px">16px The quick brown fox jumps</div>
+</div>
+<script>
+  const L = new URLSearchParams(location.search).get('label') || '';
+  function info(){document.getElementById('info').textContent =
+    (L ? L + ' · ' : '') + innerWidth + '×' + innerHeight + ' css @' + devicePixelRatio.toFixed(2) + 'x';
+    document.getElementById('big').textContent = L || 'A';}
+  addEventListener('resize', info); info();
+  addEventListener('pointerdown', e => { const d=document.createElement('div'); d.className='dot';
+    d.style.left=e.clientX+'px'; d.style.top=e.clientY+'px'; document.body.append(d);
+    setTimeout(()=>d.remove(), 4000); });
+</script>
+</body></html>

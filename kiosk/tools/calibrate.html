@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Touch calibration</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0e14;color:#e6e9ef;font:16px/1.3 system-ui,sans-serif;overflow:hidden;user-select:none;touch-action:none}
+  #msg{position:fixed;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;padding:0 60px;pointer-events:none}
+  #msg b{display:block;font-size:20px;margin-bottom:4px}
+  .tg{position:fixed;width:44px;height:44px;margin:-22px;pointer-events:none}
+  .tg::before,.tg::after{content:"";position:absolute;background:#ff4d4d}
+  .tg::before{left:21px;top:0;width:2px;height:44px}.tg::after{top:21px;left:0;height:2px;width:44px}
+  .ring{position:absolute;inset:6px;border:3px solid #ff4d4d55;border-radius:50%}
+  .ring.on{border-color:#4dff88}
+</style></head><body>
+<div id="msg"></div><div class="tg" id="tg"><div class="ring" id="ring"></div></div>
+<script>
+// Target positions as fractions of the screen. MUST match calibrate-touch.py.
+const T = [[.1,.1],[.9,.1],[.9,.9],[.1,.9],[.5,.5]];
+const HOLD = 700;            // ms; the capture script only counts presses >= 500 ms
+let i = 0, t0 = 0, timer = null;
+const tg = document.getElementById('tg'), ring = document.getElementById('ring'), msg = document.getElementById('msg');
+function show(){
+  if (i >= T.length){ tg.style.display='none'; msg.innerHTML='<b>Done ✓</b>You can stop touching the screen.'; return; }
+  tg.style.left = T[i][0]*100+'vw'; tg.style.top = T[i][1]*100+'vh'; ring.className='ring';
+  msg.innerHTML = '<b>Target '+(i+1)+' of '+T.length+'</b>Press and HOLD the red cross until the circle turns green, then lift.';
+}
+// Positions aren't trusted yet (that's what we're calibrating), so any press counts.
+addEventListener('pointerdown', () => { t0 = Date.now(); clearTimeout(timer);
+  timer = setTimeout(() => ring.className='ring on', HOLD); });
+addEventListener('pointerup', () => { clearTimeout(timer);
+  if (Date.now() - t0 >= HOLD) { i++; setTimeout(show, 300); } else ring.className='ring'; });
+show();
+</script>
+</body></html>

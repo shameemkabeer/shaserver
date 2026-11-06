@@ -1,0 +1,15 @@
+# Uptime Kuma - installed by PiBoard. Bound to localhost + Tailscale IP only.
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "${LOCAL_IP}:3001:3001"
+      - "${TAILSCALE_IP}:3001:3001"
+    security_opt:
+      - no-new-privileges:true

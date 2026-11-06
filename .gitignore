@@ -1,0 +1,12 @@
+.env
+apps/
+data/
+screensaver/*
+!screensaver/.gitkeep
+kiosk/kiosk.conf
+kiosk/touch.conf
+# local notes / build junk
+prompt*.txt
+prompt.md
+__pycache__/
+*.pyc

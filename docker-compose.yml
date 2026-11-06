@@ -1,0 +1,49 @@
+# PiBoard. Values come from .env (created by install.sh, see .env.example).
+#
+# SECURITY: Docker-published ports bypass ufw. PiBoard is therefore published
+# ONLY on 127.0.0.1 and your Tailscale IP, never 0.0.0.0. (Port 8088 below is
+# the container-internal port, not a host binding.)
+services:
+  piboard:
+    build: .
+    image: piboard:local
+    container_name: piboard
+    hostname: piboard
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    group_add:
+      - "${DOCKER_GID}"            # allows access to the Docker socket (see README: root-equivalent!)
+    environment:
+      - PIBOARD_HOME=${PIBOARD_HOME}
+      - LOCAL_IP=${LOCAL_IP}
+      - TAILSCALE_IP=${TAILSCALE_IP}
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEATHER_LAT=${WEATHER_LAT:-24.21}     # screensaver weather (Open-Meteo); set yours in .env
+      - WEATHER_LON=${WEATHER_LON:-55.74}
+    ports:
+      - "${LOCAL_IP}:${PIBOARD_PORT}:8088"
+      - "${TAILSCALE_IP}:${PIBOARD_PORT}:8088"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # apps are mounted at the SAME path as on the host so that relative
+      # volume paths in app compose files resolve correctly for the daemon
+      - ${PIBOARD_HOME}/apps:${PIBOARD_HOME}/apps
+      - ${PIBOARD_HOME}/data:/data
+      - ${PIBOARD_HOME}/screensaver:/screensaver:ro
+      # USB drives that kiosk/hostd.py mounts under /media/<user>/ (read-only here:
+      # PiBoard only shows their usage; rslave makes drives plugged in later appear)
+      - /media:/media:ro,rslave
+      - /etc/hostname:/host/hostname:ro
+      - /etc/localtime:/etc/localtime:ro
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options: { max-size: "5m", max-file: "2" }

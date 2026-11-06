@@ -1,0 +1,9 @@
+{
+  "title": "Jellyfin",
+  "description": "Free media server for movies, shows and music.",
+  "icon": "play",
+  "color": "#aa5cc3",
+  "dirs": ["config", "cache", "media"],
+  "ports": [{"port": 8096, "label": "Web UI"}],
+  "notes": "Put media in the 'media' folder of its app directory, or edit the ./media volume in docker-compose.yml to point at your drive. The Pi 5 has no hardware video encoder, so prefer direct play over transcoding."
+}

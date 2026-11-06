@@ -1,0 +1,9 @@
+{
+  "title": "File Browser",
+  "description": "Web file manager. Serves the 'files' folder inside its app directory.",
+  "icon": "folder",
+  "color": "#40c4ff",
+  "dirs": ["files", "database", "config"],
+  "ports": [{"port": 8082, "label": "Web UI"}],
+  "notes": "User 'admin'; a random first-run password is printed in the container logs (Containers > filebrowser > Logs). Change it right away. To browse another folder, edit the ./files volume in docker-compose.yml."
+}

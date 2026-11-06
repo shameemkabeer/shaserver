@@ -1,0 +1,9 @@
+{
+  "title": "AdGuard Home",
+  "description": "Network-wide ad and tracker blocking DNS server.",
+  "icon": "shield",
+  "color": "#68bc71",
+  "dirs": ["work", "conf"],
+  "ports": [{"port": 3000, "label": "Web UI"}],
+  "notes": "In the first-run wizard set Admin Web Interface port to 3000 and DNS port to 53. DNS listens only on 127.0.0.1 and your Tailscale IP. To use it for the tailnet, set it as a custom nameserver in the Tailscale admin console."
+}

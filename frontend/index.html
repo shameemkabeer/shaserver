@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0e14">
+<meta name="color-scheme" content="dark">
+<title>PiBoard</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+  <!-- auth screens -->
+  <section id="auth" class="auth hidden">
+    <div class="auth-card">
+      <div class="brand big"><span class="logo"></span>PiBoard</div>
+      <form id="login-form" class="hidden">
+        <label>Admin password
+          <input type="password" id="login-pw" autocomplete="current-password" required>
+        </label>
+        <button class="btn primary" type="submit">Sign in</button>
+      </form>
+      <form id="setup-form" class="hidden">
+        <p class="muted small">First run. Enter the setup code from <code>~/piboard/data/setup.code</code>
+          (or <code>docker logs piboard</code>) and choose an admin password.</p>
+        <label>Setup code <input id="setup-code" autocomplete="off" autocapitalize="characters" required></label>
+        <label>New password (min 10 chars) <input type="password" id="setup-pw" autocomplete="new-password" minlength="10" required></label>
+        <label>Repeat password <input type="password" id="setup-pw2" autocomplete="new-password" minlength="10" required></label>
+        <button class="btn primary" type="submit">Set password</button>
+      </form>
+      <p id="auth-msg" class="msg"></p>
+    </div>
+  </section>
+
+  <!-- main app -->
+  <div id="shell" class="shell hidden">
+    <header class="topbar">
+      <div class="brand"><span class="logo"></span><span id="hostname">PiBoard</span></div>
+      <nav class="tabs" id="tabs">
+        <button data-view="dash" class="active"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zm0 7h6v-5H4zm10 0h6v-9h-6zm0-16v5h6V4z"/></svg><span>Home</span></button>
+        <button data-view="containers"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4zm9-1.8L6.2 7.6 12 10l5.8-2.4zM5 9.1v6.6l6 2.7v-6.7zm8 9.3 6-2.7V9.1l-6 2.6z"/></svg><span>Containers</span></button>
+        <button data-view="apps"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm12 0h2v3h3v2h-3v3h-2v-3h-3v-2h3z"/></svg><span>Apps</span></button>
+        <button data-view="settings"><svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.7a7 7 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.7a7 7 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg><span>Settings</span></button>
+        <button data-href="terminal.html" class="admin-only pi-hide" title="Terminal on the Pi"><svg viewBox="0 0 24 24"><path d="M3 4h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm1 2v12h16V6zm2.3 2.3 1.4-1.4L11.8 11l-4.1 4.1-1.4-1.4L9 11zM12 14h6v2h-6z"/></svg><span>Terminal</span></button>
+      </nav>
+      <button class="iconbtn pi-only" id="display-off" aria-label="Turn the display off" title="Turn the display off"><svg viewBox="0 0 24 24"><path d="M11 3h2v9h-2zm6.1 2.5 1.4-1.4A9 9 0 1 1 5.5 4.1l1.4 1.4a7 7 0 1 0 10.2 0z"/></svg></button>
+    </header>
+
+    <main>
+      <!-- dashboard -->
+      <section id="view-dash" class="view">
+        <div class="stats">
+          <div class="stat" id="st-cpu"><div class="ring"><svg viewBox="0 0 36 36"><circle class="track" cx="18" cy="18" r="15.9"/><circle class="bar" cx="18" cy="18" r="15.9"/></svg><b class="val">-</b></div><span class="lbl">CPU</span><span class="sub"></span></div>
+          <div class="stat" id="st-mem"><div class="ring"><svg viewBox="0 0 36 36"><circle class="track" cx="18" cy="18" r="15.9"/><circle class="bar" cx="18" cy="18" r="15.9"/></svg><b class="val">-</b></div><span class="lbl">Memory</span><span class="sub"></span></div>
+          <div class="stat" id="st-temp"><div class="ring"><svg viewBox="0 0 36 36"><circle class="track" cx="18" cy="18" r="15.9"/><circle class="bar" cx="18" cy="18" r="15.9"/></svg><b class="val">-</b></div><span class="lbl">CPU temp</span><span class="sub"></span></div>
+          <div class="stat" id="st-disk"><div class="ring"><svg viewBox="0 0 36 36"><circle class="track" cx="18" cy="18" r="15.9"/><circle class="bar" cx="18" cy="18" r="15.9"/></svg><b class="val">-</b></div><span class="lbl">Disk</span><span class="sub"></span></div>
+        </div>
+        <div class="infobar">
+          <span><em>Uptime</em> <b id="uptime">-</b></span>
+          <span><em>Load</em> <b id="load">-</b></span>
+          <span><em>Containers</em> <b id="ccount">-</b></span>
+        </div>
+        <div class="card" id="storage-card">
+          <h3>External storage</h3>
+          <div id="storage-list" class="drives"></div>
+        </div>
+        <div class="card" id="dash-apps-card">
+          <h3>Running</h3>
+          <div id="dash-running" class="chips"></div>
+        </div>
+      </section>
+
+      <!-- containers -->
+      <section id="view-containers" class="view hidden">
+        <div class="list" id="container-list"></div>
+      </section>
+
+      <!-- apps -->
+      <section id="view-apps" class="view hidden">
+        <div class="appgrid" id="app-list"></div>
+      </section>
+
+      <!-- settings -->
+      <section id="view-settings" class="view hidden">
+        <div class="card admin-only pi-hide" id="display-card">
+          <h3>Pi display</h3>
+          <div class="row"><span>Screen</span><span class="disp-state"><b id="disp-state">–</b><button class="btn sm" id="disp-toggle">Turn off</button></span></div>
+          <div class="row"><label for="disp-bright">Brightness</label><span class="bright"><input type="range" id="disp-bright" min="10" max="100" step="5"><b id="disp-bright-val"></b></span></div>
+          <div class="row"><label for="disp-off-at">Turn off every night at</label><input type="time" id="disp-off-at"></div>
+          <div class="row"><label for="disp-on-at">Turn on every morning at</label><input type="time" id="disp-on-at"></div>
+          <p class="muted small">Leave a time empty to skip it. When the screen is off, tap it to turn it on. The panel has no backlight control, so brightness dims the picture. Turning the screen off switches off the HDMI signal.</p>
+        </div>
+        <div class="card">
+          <h3>Screensaver</h3>
+          <div class="row"><label for="set-idle">Idle minutes (0 = off)</label><input type="number" id="set-idle" min="0" max="1440" inputmode="numeric"></div>
+          <div class="row"><label for="set-24h">24-hour clock</label><input type="checkbox" id="set-24h" class="switch"></div>
+          <div class="row"><label for="set-local">Use screensaver on this device</label><input type="checkbox" id="set-local" class="switch"></div>
+          <p class="muted small" id="sky-times">The background is a generated sky that follows the real sunrise and sunset for your location, with the weather under the clock.</p>
+          <p class="muted small">To use your own wallpapers, put images in <code>~/piboard/screensaver/</code>. They change with the time of day. Put <code>sunrise</code>, <code>day</code>, <code>sunset</code> or <code>night</code> in a file name to show it at that time.</p>
+          <div class="btnrow"><button class="btn" id="ss-preview">Preview</button><button class="btn primary admin-only" id="set-save">Save</button></div>
+        </div>
+        <div class="card">
+          <h3>Devices</h3>
+          <div class="devlist" id="device-list"></div>
+          <p class="muted small">Every browser signed in to PiBoard. The Pi display is the server's own screen and always stays signed in.</p>
+        </div>
+        <div class="card admin-only pi-hide">
+          <h3>Kiosk</h3>
+          <div class="row"><label for="set-kiosk">Kiosk display may start/stop containers</label><input type="checkbox" id="set-kiosk" class="switch"></div>
+          <p class="muted small">The kiosk session is read-only by default.</p>
+        </div>
+        <div class="card admin-only pi-hide">
+          <h3>Change password</h3>
+          <form id="pw-form">
+            <input type="password" id="pw-cur" placeholder="Current password" autocomplete="current-password" required>
+            <input type="password" id="pw-new" placeholder="New password (min 10)" autocomplete="new-password" minlength="10" required>
+            <button class="btn" type="submit">Change</button>
+          </form>
+          <p class="muted small">Changing the password signs out all other devices. The Pi display stays signed in.</p>
+        </div>
+        <div class="card pi-hide">
+          <h3>Session</h3>
+          <p class="muted small" id="role-line"></p>
+          <div class="btnrow"><button class="btn kiosk-only" id="admin-login">Admin sign-in</button><button class="btn danger" id="logout">Sign out</button></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- modal (logs, job output, confirm) -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-head"><h3 id="modal-title"></h3><button class="iconbtn" id="modal-close" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6.4 5 12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4z"/></svg></button></div>
+      <pre id="modal-pre" class="hidden"></pre>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <!-- Pi display only: software dimmer, and a catcher that eats the tap that wakes the screen -->
+  <div id="dimmer" class="dimmer" aria-hidden="true"></div>
+  <div id="wake-catch" class="wake-catch hidden" aria-hidden="true"></div>
+
+  <!-- screensaver: generated sky scenes (no image files), crossfaded by time of day.
+       The landscape (layered ridges + haze) and star field are built in app.js. -->
+  <div id="screensaver" class="ss hidden" aria-hidden="true">
+    <div class="sky sky-morning" data-scene="morning">
+      <div class="sun"></div>
+      <div class="wisp w1"></div><div class="wisp w2"></div><div class="wisp w3"></div>
+      <svg class="land" viewBox="0 0 800 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="sky sky-afternoon" data-scene="afternoon">
+      <div class="sun"></div>
+      <div class="wisp w1"></div><div class="wisp w2"></div><div class="wisp w3"></div><div class="wisp w4"></div>
+      <svg class="land" viewBox="0 0 800 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="sky sky-evening" data-scene="evening">
+      <div class="stars faint"></div>
+      <div class="sun"></div>
+      <div class="wisp w1"></div><div class="wisp w2"></div><div class="wisp w3"></div>
+      <svg class="land" viewBox="0 0 800 200" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="sky sky-night" data-scene="night">
+      <div class="milky"></div>
+      <div class="shooting s2"></div><div class="shooting s3"></div>
+      <div class="stars tw1"></div><div class="stars tw2"></div><div class="stars tw3"></div><div class="stars tw4"></div>
+      <div class="shooting"></div>
+      <div class="moon-glow"></div><div class="moon-dark"></div><div class="moon"></div>
+      <svg class="land" viewBox="0 0 800 200" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- optional wallpapers from ~/piboard/screensaver/ cover the sky when present -->
+    <div class="ss-bg" id="ss-a"></div>
+    <div class="ss-bg" id="ss-b"></div>
+    <div class="ss-scrim"></div>
+    <div class="ss-grain"></div>
+    <div class="ss-clock">
+      <div class="ss-date" id="ss-date"></div>
+      <div class="ss-time"><span id="ss-hh"></span><span class="ss-colon">:</span><span id="ss-mm"></span></div>
+      <div class="ss-wx hidden" id="ss-wx">
+        <span class="ss-wx-icon" id="ss-wx-icon"></span>
+        <span class="ss-wx-temp" id="ss-wx-temp"></span>
+      </div>
+    </div>
+    <div class="ss-badge hidden" id="ss-badge"></div>
+    <div class="ss-temp" id="ss-temp"></div>
+  </div>
+</body>
+</html>

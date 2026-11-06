@@ -1,0 +1,7 @@
+apps
+data
+screensaver
+kiosk
+.env
+*.md
+.git

@@ -1,0 +1,19 @@
+# Jellyfin - installed by PiBoard. Bound to localhost + Tailscale IP only.
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - ./media:/media:ro
+      - /media:/usb:ro,rslave          # USB drives plugged into the Pi: add /usb/<user>/<drive> as a library
+    ports:
+      - "${LOCAL_IP}:8096:8096"
+      - "${TAILSCALE_IP}:8096:8096"
+    security_opt:
+      - no-new-privileges:true

@@ -23,6 +23,7 @@ from pathlib import Path
 
 import asyncio
 import struct
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, JSONResponse
@@ -593,7 +594,14 @@ def app_states() -> dict[str, str]:
 # --------------------------------------------------------------------------
 # FastAPI app
 # --------------------------------------------------------------------------
-app = FastAPI(title="PiBoard", docs_url=None, redoc_url=None, openapi_url=None)
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    bootstrap()
+    cpu_sampler.start()
+    yield
+
+
+app = FastAPI(title="PiBoard", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 
 PUBLIC_API = {"/api/health", "/api/status", "/api/login", "/api/setup", "/api/kiosk-login"}
 # the kiosk (the Pi's own display) can't even sign itself out; it may only turn its screen off
@@ -604,7 +612,9 @@ KIOSK_SETTINGS = {"screensaver_24h", "screensaver_idle_minutes"}
 
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
-    path = request.url.path
+    # The raw path the router dispatches on, never request.url.path: request.url is
+    # rebuilt from the Host header + path and can disagree with the route that runs.
+    path = request.scope["path"]
     if path.startswith("/api/") and path not in PUBLIC_API:
         role = session_role(request)
         if role is None:
@@ -1183,9 +1193,3 @@ def kiosk_page():
 
 
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
-
-
-@app.on_event("startup")
-def _startup():
-    bootstrap()
-    cpu_sampler.start()

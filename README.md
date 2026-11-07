@@ -14,6 +14,26 @@ A small, self-hosted home-server dashboard for the Raspberry Pi 5 (in the spirit
 - **Kiosk**: cage + Chromium full-screen on the HDMI display. Starts at boot, with no desktop.
 - **Screensaver**: lock-screen-style clock and date over an animated sky that follows the time of day, with the current weather under the clock. Tap to wake.
 
+
+![PiBoard dashboard](docs/screenshots/dashboard.webp)
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/app-store.webp" alt="One-click app store"><br><sub><b>App store</b>: one-click AdGuard Home, Uptime Kuma, File Browser, Jellyfin</sub></td>
+    <td width="50%"><img src="docs/screenshots/containers.webp" alt="Container list"><br><sub><b>Containers</b>: start, stop, restart, logs</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/screensaver.webp" alt="Lock-screen screensaver"><br><sub><b>Screensaver</b>: clock and weather over a sky that follows the sun</sub></td>
+    <td><img src="docs/screenshots/kiosk.webp" alt="Kiosk on a 480x320 touchscreen"><br><sub><b>Kiosk</b>: the Pi's own 480x320 touchscreen, read-only</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/settings.webp" alt="Settings: display schedule, devices, kiosk"><br><sub><b>Settings</b>: display schedule, signed-in devices, kiosk rights</sub></td>
+    <td align="center"><img src="docs/screenshots/mobile.webp" alt="PiBoard on a phone" width="60%"><br><sub><b>Phone</b>: same app, bottom tab bar</sub></td>
+  </tr>
+</table>
+
+<sub>Screenshots use demo data.</sub>
+
 ```
 piboard/
 ├── docker-compose.yml   Dockerfile   .env (generated)   .env.example

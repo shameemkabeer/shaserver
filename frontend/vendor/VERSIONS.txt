@@ -5,3 +5,9 @@ Vendored for the web terminal (served locally: the page CSP allows only 'self').
 @xterm/addon-fit 0.11.0 https://registry.npmjs.org/@xterm/addon-fit/-/addon-fit-0.11.0.tgz
   integrity sha512-jYcgT6xtVYhnhgxh3QgYDnnNMYTcf8ElbxxFzX0IZo+vabQqSPAjC3c1wJrKB5E19VwQei89QCiZZP86DCPF7g==
   files: lib/addon-fit.js
+
+The only change from the npm files is the trailing "//# sourceMappingURL=..." line,
+removed because the .map files aren't vendored. SHA-256 of the files here:
+  98d0973151aff2991d335b1adbbdac2e14da26341abe329d677d4c0034402bdf  xterm.js
+  4df3789fa7bff5d545ba38462a8cd2f7460ba971021bce3f81c2870f937a201e  addon-fit.js
+  854a7c0fb70e8b1a083c16797ab827299fb18744f5ad34f227b48337e33293c6  xterm.css (unchanged)

@@ -14,7 +14,7 @@ the active seat session is what lets it:
 It talks to PiBoard only through files in data/ (mode 700, owned by this user):
   data/host-requests/*.json   requests from PiBoard, deleted once handled
   data/host-status.json       what is true now (display, drives), for PiBoard to show
-  data/settings.json          read only: display_off_at / display_on_at
+  data/settings.json          read only: display_off_at / display_on_at (+ display_break_*)
 No network, no root, no new privileges for the container.
 """
 from __future__ import annotations
@@ -400,14 +400,16 @@ def main() -> None:
                 if typ == EV_KEY and code == BTN_TOUCH and val == 1 and not disp.on:
                     disp.set(True, "touch")
 
-        # daily schedule
+        # daily schedules: the night one and an optional daytime break
         now = time.time()
         st = read_json(SETTINGS, {})
-        off_at, on_at = parse_hhmm(st.get("display_off_at", "00:30")), parse_hhmm(st.get("display_on_at", ""))
-        if crossed(prev, now, off_at):
-            disp.set(False, "schedule")
-        if crossed(prev, now, on_at):
-            disp.set(True, "schedule")
+        for off_key, on_key, off_default in (("display_off_at", "display_on_at", "00:30"),
+                                             ("display_break_off_at", "display_break_on_at", "")):
+            off_at, on_at = parse_hhmm(st.get(off_key, off_default)), parse_hhmm(st.get(on_key, ""))
+            if crossed(prev, now, off_at):
+                disp.set(False, "schedule")
+            if crossed(prev, now, on_at):
+                disp.set(True, "schedule")
         prev = now
 
         # requests from PiBoard

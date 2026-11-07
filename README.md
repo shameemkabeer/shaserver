@@ -90,7 +90,7 @@ Tuning goes in `kiosk/kiosk.conf` (copy it from `kiosk.conf.example`): browser z
 ### Pi display: power, brightness, nightly off
 
 - **Off button:** the Pi's own screen has a power button in the top bar. Tap the dark screen to turn it back on (that tap doesn't click anything).
-- **Admin, from another device: Settings → Pi display.** Turn the screen on or off, set the brightness (10–100 %), and set daily times. By default the screen turns off every night at **00:30** and stays off until tapped. Set *Turn on every morning at* to bring it back automatically.
+- **Admin, from another device: Settings → Pi display.** Turn the screen on or off, set the brightness (10–100 %), and set daily times. By default the screen turns off every night at **00:30** and stays off until tapped. Set *Turn on every morning at* to bring it back automatically. A second *Daytime break* window (for example off at 14:30, on at 17:00) works the same way and is empty by default.
 - **How it works:** off means the HDMI output is switched off (`wlr-randr`), so the panel gets no signal. The panel has no software backlight control, so brightness is a dimming layer drawn over the picture.
 
 ### External storage (USB drives)

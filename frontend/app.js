@@ -325,6 +325,8 @@ async function loadDisplay() {
   $("#disp-bright-val").textContent = `${d.brightness}%`;
   if (document.activeElement !== $("#disp-off-at")) $("#disp-off-at").value = d.off_at;
   if (document.activeElement !== $("#disp-on-at")) $("#disp-on-at").value = d.on_at;
+  if (document.activeElement !== $("#disp-break-off-at")) $("#disp-break-off-at").value = d.break_off_at || "";
+  if (document.activeElement !== $("#disp-break-on-at")) $("#disp-break-on-at").value = d.break_on_at || "";
 }
 async function saveDisplay(body, msg) {
   try { state.settings = await api("/api/settings", { method: "PUT", body }); toast(msg); }
@@ -343,6 +345,10 @@ $("#disp-off-at").addEventListener("change", (e) => saveDisplay({ display_off_at
   e.target.value ? `The display turns off every night at ${e.target.value}` : "Nightly turn-off is off"));
 $("#disp-on-at").addEventListener("change", (e) => saveDisplay({ display_on_at: e.target.value },
   e.target.value ? `The display turns on every morning at ${e.target.value}` : "The display stays off until tapped"));
+$("#disp-break-off-at").addEventListener("change", (e) => saveDisplay({ display_break_off_at: e.target.value },
+  e.target.value ? `Daytime break: the display turns off at ${e.target.value}` : "Daytime break turn-off is off"));
+$("#disp-break-on-at").addEventListener("change", (e) => saveDisplay({ display_break_on_at: e.target.value },
+  e.target.value ? `Daytime break: the display turns on at ${e.target.value}` : "After the break the display stays off until tapped"));
 
 // On the Pi itself: apply the dimmer, and while the screen is off catch the tap that
 // wakes it (hostd turns the HDMI back on at the touch) so it doesn't click anything.

@@ -67,6 +67,8 @@ DEFAULT_SETTINGS = {
     "display_brightness": 100,        # Pi display, 10-100 % (software dimming: the panel has no backlight control)
     "display_off_at": "00:30",        # daily auto-off, "" = never (kiosk/hostd.py applies it)
     "display_on_at": "",              # daily auto-on, "" = stay off until the screen is tapped
+    "display_break_off_at": "",       # optional 2nd daily window (e.g. a lunch break): off at ...
+    "display_break_on_at": "",        # ... and back on at (applied by kiosk/hostd.py too)
 }
 HOST_REQ_DIR = DATA_DIR / "host-requests"   # read by kiosk/hostd.py on the host
 HOST_STATUS = DATA_DIR / "host-status.json"
@@ -812,7 +814,8 @@ def get_display():
     st, s = host_status(), load_settings()
     d = st.get("display") or {}
     return {"on": d.get("on", True), "since": d.get("since"), "reason": d.get("reason"), "helper": st["helper"],
-            "brightness": s["display_brightness"], "off_at": s["display_off_at"], "on_at": s["display_on_at"]}
+            "brightness": s["display_brightness"], "off_at": s["display_off_at"], "on_at": s["display_on_at"],
+            "break_off_at": s["display_break_off_at"], "break_on_at": s["display_break_on_at"]}
 
 
 @app.post("/api/display/{state}")

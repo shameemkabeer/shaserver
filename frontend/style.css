@@ -264,7 +264,13 @@ input[type=time] { min-height: var(--tap); padding: 0 10px; border-radius: 12px;
 @media (max-height: 420px) and (orientation: landscape) {
   :root { --gap: 8px; --tap: 40px; }
   body { font-size: 14px; }
-  .topbar { display: none; }
+  /* no top bar here, but its .tabs child becomes the side rail: "contents" drops the
+     bar's own box (display:none would hide the rail with it) */
+  .topbar { display: contents; }
+  .topbar .brand { display: none; }
+  .topbar #display-off { position: fixed; left: 0; bottom: 0; z-index: 7; width: 56px; height: 48px; margin: 0;
+    border-radius: 0; border: 0; border-top: 1px solid var(--line); border-right: 1px solid var(--line); }
+  body.onpi .tabs { bottom: 48px; }
   .tabs { position: fixed; top: 0; bottom: 0; left: 0; right: auto; width: 56px; display: flex; flex-direction: column;
     justify-content: space-around; border-top: 0; border-right: 1px solid var(--line); padding: 0; gap: 0; }
   .tabs button { min-height: 0; flex: 1; padding: 0; font-size: 0; gap: 0; place-content: center; border-radius: 0; }
